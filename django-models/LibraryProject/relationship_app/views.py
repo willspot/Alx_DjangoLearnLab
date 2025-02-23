@@ -3,26 +3,29 @@ from django.shortcuts import render
 from relationship_app.models import Book
 from django.views.generic.detail import DetailView  # Correct import for DetailView
 from relationship_app.models import Library
+from django.contrib.auth import login
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
-# Registration view to allow users to register
+# Registration view to allow users to register and log them in immediately
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('login')  # Redirect to login after registration
+            # Save the new user and log them in
+            user = form.save()
+            login(request, user)  # Automatically log in the user after registration
+            return redirect('home')  # Redirect to a homepage or dashboard (you can change this URL)
     else:
         form = UserCreationForm()
     return render(request, 'relationship_app/register.html', {'form': form})
 
-# Login view (Django built-in view)
+# Custom login view (Django built-in view)
 class CustomLoginView(LoginView):
     template_name = 'relationship_app/login.html'
 
-# Logout view (Django built-in view)
+# Custom logout view (Django built-in view)
 class CustomLogoutView(LogoutView):
     template_name = 'relationship_app/logout.html'
 
@@ -39,3 +42,6 @@ class LibraryDetailView(DetailView):
     model = Library  # Define the model to use for this view
     template_name = 'relationship_app/library_detail.html'  # Specify the template for rendering the library detail page
     context_object_name = 'library'  # Context name used in the template
+
+def home(request):
+    return render(request, 'relationship_app/home.html')  # Create a template for the home page

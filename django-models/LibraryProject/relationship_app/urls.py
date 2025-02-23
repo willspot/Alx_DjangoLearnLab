@@ -1,8 +1,11 @@
 from django.urls import path
 from .views import list_books, LibraryDetailView  # Import the views here
 from django.contrib.auth import views as auth_views
+from relationship_app import views
 
 urlpatterns = [
+    path('', views.home, name='home'),  # Home page for logged-in users
+
     # URL pattern for the function-based view (FBV)
     path('books/', list_books, name='list_books'),
 
