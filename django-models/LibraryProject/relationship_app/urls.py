@@ -2,8 +2,13 @@ from django.urls import path
 from .views import list_books, LibraryDetailView  # Import the views here
 from django.contrib.auth import views as auth_views
 from relationship_app import views
+from . import views
 
 urlpatterns = [
+    path('admin/', views.admin_view, name='admin_view'),
+    path('librarian/', views.librarian_view, name='librarian_view'),
+    path('member/', views.member_view, name='member_view'),
+
     path('', views.home, name='home'),  # Home page for logged-in users
 
     # URL pattern for LoginView (customized to use your template)

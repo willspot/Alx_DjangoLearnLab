@@ -7,6 +7,37 @@ from django.contrib.auth import login
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
+from django.shortcuts import render
+from django.contrib.auth.decorators import user_passes_test
+from django.http import HttpResponse
+
+# Helper function to check if the user has the 'Admin' role
+def is_admin(user):
+    return user.userprofile.role == 'Admin'
+
+# Helper function to check if the user has the 'Librarian' role
+def is_librarian(user):
+    return user.userprofile.role == 'Librarian'
+
+# Helper function to check if the user has the 'Member' role
+def is_member(user):
+    return user.userprofile.role == 'Member'
+
+# Admin view (accessible only by 'Admin' users)
+@user_passes_test(is_admin)
+def admin_view(request):
+    return HttpResponse('Welcome to the Admin Dashboard!')
+
+# Librarian view (accessible only by 'Librarian' users)
+@user_passes_test(is_librarian)
+def librarian_view(request):
+    return HttpResponse('Welcome to the Librarian Dashboard!')
+
+# Member view (accessible only by 'Member' users)
+@user_passes_test(is_member)
+def member_view(request):
+    return HttpResponse('Welcome to the Member Dashboard!')
+
 
 # Registration view to allow users to register and log them in immediately
 def register(request):
