@@ -100,6 +100,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# settings.py
+
+LOGIN_REDIRECT_URL = '/'  # After login, redirect users to the home page (you can change this)
+LOGOUT_REDIRECT_URL = '/'  # After logout, redirect users to the home page (you can change this)
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
