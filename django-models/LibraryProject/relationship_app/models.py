@@ -6,6 +6,22 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+class Book(models.Model):
+    title = models.CharField(max_length=100)
+    author = models.ForeignKey('Author', on_delete=models.CASCADE)
+    publication_year = models.IntegerField()
+
+    # Define custom permissions in the Meta class
+    class Meta:
+        permissions = [
+            ('can_add_book', 'Can add book'),
+            ('can_change_book', 'Can change book'),
+            ('can_delete_book', 'Can delete book'),
+        ]
+
+    def __str__(self):
+        return self.title
+
 # Signal to automatically create or update the UserProfile when the User is saved
 @receiver(post_save, sender=User)
 def create_or_update_user_profile(sender, instance, created, **kwargs):

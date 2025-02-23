@@ -6,10 +6,56 @@ from relationship_app.models import Library
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, redirect
+from django.shortcuts import render, get_object_or_404, redirect
 from django.shortcuts import render
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponse
+from django.contrib.auth.decorators import permission_required
+from .models import Book
+
+# View to add a new book (requires 'can_add_book' permission)
+@permission_required('relationship_app.can_add_book')
+def add_book(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        author_id = request.POST.get('author')
+        publication_year = request.POST.get('publication_year')
+        
+        # Add the book to the database
+        new_book = Book.objects.create(
+            title=title, 
+            author_id=author_id, 
+            publication_year=publication_year
+        )
+        return redirect('book_list')  # Redirect to the list of books
+
+    return render(request, 'add_book.html')
+
+
+# View to edit an existing book (requires 'can_change_book' permission)
+@permission_required('relationship_app.can_change_book')
+def edit_book(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    if request.method == 'POST':
+        book.title = request.POST.get('title')
+        book.author_id = request.POST.get('author')
+        book.publication_year = request.POST.get('publication_year')
+        book.save()
+        return redirect('book_list')  # Redirect to the list of books
+
+    return render(request, 'edit_book.html', {'book': book})
+
+
+# View to delete a book (requires 'can_delete_book' permission)
+@permission_required('relationship_app.can_delete_book')
+def delete_book(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    if request.method == 'POST':
+        book.delete()
+        return redirect('book_list')  # Redirect to the list of books
+
+    return render(request, 'delete_book.html', {'book': book})
+
 
 # Helper function to check if the user has the 'Admin' role
 def is_admin(user):
