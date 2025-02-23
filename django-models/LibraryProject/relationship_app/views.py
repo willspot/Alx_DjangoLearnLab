@@ -1,3 +1,4 @@
+from .models import Library  # Import the Library model
 from django.shortcuts import render
 from relationship_app.models import Book
 from django.views.generic import DetailView
@@ -13,6 +14,6 @@ def list_books(request):
 
 # Class-based view to show details of a specific library
 class LibraryDetailView(DetailView):
-    model = Library
-    template_name = 'library_detail.html'  # Specify the template for rendering the library detail page
+    model = Library  # Define the model to use for this view
+    template_name = 'relationship_app/library_detail.html'  # Specify the template for rendering the library detail page
     context_object_name = 'library'  # Context name used in the template
