@@ -30,7 +30,7 @@ def get_librarian_for_library(library_name):
     library = Library.objects.get(name=library_name)
     
     # Retrieve the librarian for this library (OneToOneField)
-    librarian = library.librarian  # Use the related_name 'librarian' for OneToOneField
+    librarian = Librarian.objects.get(library=library)  # Correct query using OneToOneField
     
     # Print the librarian's name
     print(f"The librarian for {library_name} is {librarian.name}")
