@@ -35,6 +35,8 @@ CSRF_COOKIE_SECURE = True  # Ensure CSRF cookies are sent over HTTPS
 SESSION_COOKIE_SECURE = True  # Ensure session cookies are sent over HTTPS
 
 # For HTTPS, you may want to set the following to True
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = True  # Redirect all HTTP traffic to HTTPS
 SECURE_HSTS_SECONDS = 31536000  # HTTP Strict Transport Security, 1 year
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Apply HSTS to subdomains
