@@ -3,6 +3,8 @@ from .views import list_books, LibraryDetailView  # Import the views here
 from django.contrib.auth import views as auth_views
 from relationship_app import views
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('book/add/', views.add_book, name='add_book'),
@@ -34,4 +36,4 @@ urlpatterns = [
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('logout/', views.CustomLogoutView.as_view(), name='logout'),
     path('register/', views.register, name='register'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
