@@ -23,7 +23,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-xlt6smu5_2!o0!c(0-k@6&0da&pf-rc2=sb=7!(x#amka_!v$#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+
+# Security Settings
+SECURE_BROWSER_XSS_FILTER = True  # Enable browser-side XSS filtering
+X_FRAME_OPTIONS = 'DENY'  # Prevent clickjacking
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent content sniffing
+
+# Secure cookies (ensure these are set to True when using HTTPS)
+CSRF_COOKIE_SECURE = True  # Ensure CSRF cookies are sent over HTTPS
+SESSION_COOKIE_SECURE = True  # Ensure session cookies are sent over HTTPS
+
+# For HTTPS, you may want to set the following to True
+SECURE_SSL_REDIRECT = True  # Redirect all HTTP traffic to HTTPS
+SECURE_HSTS_SECONDS = 31536000  # HTTP Strict Transport Security, 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Apply HSTS to subdomains
+SECURE_HSTS_PRELOAD = True  # Allow preloading of HSTS for major browsers
 
 ALLOWED_HOSTS = []
 
@@ -55,7 +70,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'csp.middleware.CSPMiddleware',
 ]
+
+# Define your CSP policy (restricts which domains can serve content)
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_SCRIPT_SRC = ("'self'", 'https://trusted.cdn.com')
+CSP_IMG_SRC = ("'self'", 'https://trusted.image-host.com')
 
 ROOT_URLCONF = 'LibraryProject.urls'
 

@@ -1,6 +1,12 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import permission_required
 from .models import Book
+from django.http import HttpResponse
+
+def my_view(request):
+    response = HttpResponse("Some content")
+    response['Content-Security-Policy'] = "default-src 'self'; script-src 'self' https://trusted.cdn.com;"
+    return response
 
 # View to list books, accessible only by users with the 'can_view' permission
 @permission_required('library.can_view', raise_exception=True)
