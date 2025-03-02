@@ -2,9 +2,34 @@ from django.contrib import admin
 
 # bookshelf/admin.py
 from django.contrib import admin
+from django.contrib.auth.models import Group, Permission
 from .models import Book
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
+
+# Register the Book model to manage it via Django admin
+admin.site.register(Book)
+
+# Add custom group and permissions setup
+def create_groups_and_permissions():
+    # Ensure necessary permissions are created for the 'Book' model
+    can_view = Permission.objects.get(codename='can_view')
+    can_create = Permission.objects.get(codename='can_create')
+    can_edit = Permission.objects.get(codename='can_edit')
+    can_delete = Permission.objects.get(codename='can_delete')
+
+    # Create Groups
+    editor_group, created = Group.objects.get_or_create(name='Editors')
+    editor_group.permissions.add(can_create, can_edit)
+    
+    viewer_group, created = Group.objects.get_or_create(name='Viewers')
+    viewer_group.permissions.add(can_view)
+    
+    admin_group, created = Group.objects.get_or_create(name='Admins')
+    admin_group.permissions.add(can_view, can_create, can_edit, can_delete)
+
+# Call this function after migration or once when your app starts
+create_groups_and_permissions()
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
