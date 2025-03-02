@@ -2,6 +2,20 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import permission_required
 from .models import Book
 from django.http import HttpResponse
+from django.shortcuts import render
+from .forms import BookSearchForm
+
+def search_books(request):
+    form = BookSearchForm(request.GET)
+    books = None
+    
+    if form.is_valid():
+        query = form.cleaned_data['query']
+        # Safe ORM query to search for books based on the title
+        books = Book.objects.filter(title__icontains=query)
+    
+    return render(request, 'bookshelf/book_list.html', {'form': form, 'books': books})
+
 
 def my_view(request):
     response = HttpResponse("Some content")

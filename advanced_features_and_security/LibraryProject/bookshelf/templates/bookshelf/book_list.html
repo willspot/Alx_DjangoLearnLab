@@ -1,0 +1,17 @@
+
+<form method="get">
+    {% csrf_token %}
+    <label for="id_query">Search for books:</label>
+    {{ form.query }}
+    <button type="submit">Search</button>
+</form>
+
+{% if books %}
+    <ul>
+    {% for book in books %}
+        <li>{{ book.title }} by {{ book.author }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No books found.</p>
+{% endif %}
