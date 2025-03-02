@@ -21,6 +21,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path('submit/', views.example_view, name='example_form'),
     path('admin/', admin.site.urls),
     path('relationship/', include('relationship_app.urls')),  # Link to the app's URLs
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

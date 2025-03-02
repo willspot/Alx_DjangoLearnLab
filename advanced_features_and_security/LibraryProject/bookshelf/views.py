@@ -4,6 +4,22 @@ from .models import Book
 from django.http import HttpResponse
 from django.shortcuts import render
 from .forms import BookSearchForm
+from .forms import ExampleForm
+
+def example_view(request):
+    if request.method == "POST":
+        form = ExampleForm(request.POST)
+        if form.is_valid():
+            # Handle form data (e.g., send email, save to database, etc.)
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            message = form.cleaned_data['message']
+            # For now, just pass the data back to the template
+            return render(request, 'bookshelf/form_success.html', {'name': name, 'email': email, 'message': message})
+    else:
+        form = ExampleForm()
+
+    return render(request, 'bookshelf/example_form.html', {'form': form})
 
 def search_books(request):
     form = BookSearchForm(request.GET)
