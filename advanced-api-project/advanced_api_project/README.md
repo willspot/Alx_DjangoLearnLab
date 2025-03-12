@@ -44,3 +44,8 @@
 - **ordering**: `/books/?ordering=publication_year`
   - Order by title or publication year (ascending/descending).
   - Example: `/books/?ordering=-publication_year` (descending order).
+
+## Testing the API
+
+To test the API endpoints, you can run the following command:
+
