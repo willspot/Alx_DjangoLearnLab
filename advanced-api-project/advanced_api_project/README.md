@@ -28,3 +28,19 @@
 
 ## Testing
 - Use tools like Postman or cURL to test these endpoints.
+
+# Book API Endpoints
+
+## Filtering
+- **title**: `/books/?title=Harry Potter`
+- **author__name**: `/books/?author__name=J.K. Rowling`
+- **publication_year**: `/books/?publication_year=1997`
+
+## Searching
+- **search**: `/books/?search=Harry`
+  - Search by title or author name.
+
+## Ordering
+- **ordering**: `/books/?ordering=publication_year`
+  - Order by title or publication year (ascending/descending).
+  - Example: `/books/?ordering=-publication_year` (descending order).
