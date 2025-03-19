@@ -19,6 +19,15 @@
     {% endfor %}
   </div>
 
+  {% if user.is_authenticated %}
+    <h4>Post a Comment</h4>
+    <form method="POST">
+      {% csrf_token %}
+      {{ comment_form.as_p }}
+      <button type="submit">Submit</button>
+    </form>
+  {% endif %}
+
   <h4>Post a Comment</h4>
   <form method="POST">
     {% csrf_token %}
