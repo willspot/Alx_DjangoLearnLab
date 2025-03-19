@@ -2,11 +2,16 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Post, Tag, Comment
-from taggit.forms import TagField
+from taggit.forms import TagWidget
+from taggit.managers import TaggableManager
 
 
 class PostForm(forms.ModelForm):
-    tags = TagField(required=False)  # Use TagField to handle tags
+    # Using TagWidget() directly
+    tags = forms.CharField(
+        required=False,
+        widget=TagWidget()  # Use TagWidget to create the widget for tags
+    )
 
     class Meta:
         model = Post

@@ -202,9 +202,9 @@ def post_create(request):
         form = PostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
-            post.author = request.user  # Set the post's author to the logged-in user
+            post.author = request.user  # Assign the logged-in user as the author
             post.save()
-            form.save_m2m()  # Save the tags to the many-to-many relationship
+            form.save_m2m()  # This will save the tags as well
             return redirect('post_detail', pk=post.pk)
     else:
         form = PostForm()
