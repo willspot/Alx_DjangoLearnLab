@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Post
+from .models import Post, tag
 from .models import Comment
 
 class CustomUserCreationForm(UserCreationForm):
@@ -29,3 +29,10 @@ class CommentForm(forms.ModelForm):
         widgets = {
             'content': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Write your comment here...'})
         }
+
+class PostForm(forms.ModelForm):
+    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), required=False, widget=forms.CheckboxSelectMultiple)
+
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'tags']
