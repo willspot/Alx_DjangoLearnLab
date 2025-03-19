@@ -196,3 +196,16 @@ def posts_by_tag(request, tag_name):
     tag = Tag.objects.get(name=tag_name)
     posts = tag.posts.all()
     return render(request, 'blog/posts_by_tag.html', {'tag': tag, 'posts': posts})
+
+def post_create(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user  # Set the post's author to the logged-in user
+            post.save()
+            form.save_m2m()  # Save the tags to the many-to-many relationship
+            return redirect('post_detail', pk=post.pk)
+    else:
+        form = PostForm()
+    return render(request, 'blog/post_form.html', {'form': form})

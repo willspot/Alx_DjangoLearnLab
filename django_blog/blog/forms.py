@@ -6,7 +6,7 @@ from taggit.forms import TagField
 
 
 class PostForm(forms.ModelForm):
-    tags = TagField(required=False)  # Allow tags to be added via this form.
+    tags = TagField(required=False)  # Use TagField to handle tags
 
     class Meta:
         model = Post
