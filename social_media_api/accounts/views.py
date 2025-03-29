@@ -1,46 +1,35 @@
-from django.shortcuts import render
+from rest_framework import status, generics
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authtoken.models import Token
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from .serializers import UserSerializer, LoginSerializer
-from django.contrib.auth import authenticate
-from .models import CustomUser
+from django.contrib.auth import get_user_model
+from .serializers import UserRegistrationSerializer, UserLoginSerializer, TokenSerializer
+from .serializers import UserProfileSerializer  # Import the Profile serializer
 
-class RegisterView(APIView):
+# User Registration View
+class RegisterView(generics.CreateAPIView):
+    queryset = get_user_model().objects.all()
+    serializer_class = UserRegistrationSerializer
     permission_classes = [AllowAny]
 
-    def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            token, created = Token.objects.get_or_create(user=user)
-            return Response({"token": token.key})
-        return Response(serializer.errors, status=400)
-
+# User Login View
 class LoginView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        serializer = LoginSerializer(data=request.data)
+        serializer = UserLoginSerializer(data=request.data)
         if serializer.is_valid():
-            user = authenticate(username=serializer.validated_data['username'],
-                                 password=serializer.validated_data['password'])
-            if user:
-                token, created = Token.objects.get_or_create(user=user)
-                return Response({"token": token.key})
-            return Response({"error": "Invalid credentials"}, status=400)
-        return Response(serializer.errors, status=400)
+            user = serializer.validated_data
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({'token': token.key})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['POST'])
-def follow_user(request, user_id):
-    user_to_follow = CustomUser.objects.get(id=user_id)
-    request.user.following.add(user_to_follow)
-    return Response({"message": "User followed successfully"})
+# User Profile View
+class UserProfileView(generics.RetrieveUpdateAPIView):
+    queryset = get_user_model().objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
 
-@api_view(['POST'])
-def unfollow_user(request, user_id):
-    user_to_unfollow = CustomUser.objects.get(id=user_id)
-    request.user.following.remove(user_to_unfollow)
-    return Response({"message": "User unfollowed successfully"})
+    def get_object(self):
+        return self.request.user  # Return the current authenticated user
