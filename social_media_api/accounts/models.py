@@ -3,11 +3,8 @@ from django.db import models
 
 class CustomUser(AbstractUser):
     bio = models.TextField(null=True, blank=True)
-    profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
-    followers = models.ManyToManyField('self', symmetrical=False, related_name='followers')
-
-    def __str__(self):
-        return self.username
+    profile_picture = models.ImageField(upload_to='profiles/', null=True, blank=True)
+    followers = models.ManyToManyField('self', symmetrical=False, related_name='following')
 
     # Add related_name for groups and user_permissions to avoid clashes with auth.User
     groups = models.ManyToManyField(
