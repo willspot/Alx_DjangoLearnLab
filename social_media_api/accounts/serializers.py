@@ -16,9 +16,9 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         user = get_user_model().objects.create_user(**validated_data)
 
         # Create a token for the user
-        token, created = Token.objects.get_or_create(user=user)
+        token = Token.objects.create(user=user)
 
-        # Return the user and the token
+        # Return the user and token
         return user, token
 
 # Serializer for user login (authentication)
