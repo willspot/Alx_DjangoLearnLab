@@ -43,54 +43,60 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
 
 CustomUser = get_user_model()
 
-# Follow user view
+# Follow User View
 class FollowUserView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]  # Ensure that the user is authenticated
 
     def post(self, request, user_id):
-        # Get the user to follow
+        # Try to find the user to follow
         try:
             user_to_follow = CustomUser.objects.get(id=user_id)
         except CustomUser.DoesNotExist:
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Get the current authenticated user
+        # Get the current user (who is trying to follow someone)
         current_user = request.user
 
         if current_user == user_to_follow:
             return Response({"detail": "You cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Add the user to the current user's following list
+        # Add the user to the current user's following list (ManyToManyField)
         current_user.following.add(user_to_follow)
-        return Response({"detail": f"Now following {user_to_follow.username}"}, status=status.HTTP_200_OK)
+        return Response({"detail": f"You are now following {user_to_follow.username}"}, status=status.HTTP_200_OK)
 
-# Unfollow user view
+# Unfollow User View
 class UnfollowUserView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]  # Ensure that the user is authenticated
 
     def post(self, request, user_id):
-        # Get the user to unfollow
+        # Try to find the user to unfollow
         try:
             user_to_unfollow = CustomUser.objects.get(id=user_id)
         except CustomUser.DoesNotExist:
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Get the current authenticated user
+        # Get the current user (who is trying to unfollow someone)
         current_user = request.user
 
         if current_user == user_to_unfollow:
             return Response({"detail": "You cannot unfollow yourself."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Remove the user from the current user's following list
+        # Remove the user from the current user's following list (ManyToManyField)
         current_user.following.remove(user_to_unfollow)
-        return Response({"detail": f"Unfollowed {user_to_unfollow.username}"}, status=status.HTTP_200_OK)
+        return Response({"detail": f"You have unfollowed {user_to_unfollow.username}"}, status=status.HTTP_200_OK)
 
-
-class FollowingListView(generics.ListAPIView):
-    permission_classes = [IsAuthenticated]
+# View to get a list of users the current user is following
+class FollowingListView(APIView):
+    permission_classes = [IsAuthenticated]  # Ensure that the user is authenticated
 
     def get(self, request):
+        # Get the current authenticated user
         current_user = request.user
-        following = current_user.following.all()  # Get all the users the current user is following
-        following_data = [{"username": user.username} for user in following]
+        
+        # Get all users that the current user is following
+        following = current_user.following.all()
+
+        # Prepare the response data (list of followed users)
+        following_data = [{"id": user.id, "username": user.username} for user in following]
+        
         return Response(following_data, status=status.HTTP_200_OK)
